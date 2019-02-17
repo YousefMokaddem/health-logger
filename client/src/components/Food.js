@@ -1,6 +1,9 @@
 import React from 'react';
-
-const Food = ({name, calories, fat, carbs, protein, img}) => {
+const Food = ({name, calories, fat, carbs, protein, img, id, unmountFood, index}) => {
+    const deleteFood = () => {
+        fetch(`/delete/${id}`);
+        unmountFood(index);
+    }
     return(
         <div className="food-card">
             <img src={img} alt={name}/>
@@ -9,7 +12,7 @@ const Food = ({name, calories, fat, carbs, protein, img}) => {
             <p>Fat: {fat}</p>
             <p>Carbohydrates: {carbs}</p>
             <p>Protein: {protein}</p>
-
+            <button onClick={() => deleteFood()}>Delete</button>
         </div>
     );
 }
