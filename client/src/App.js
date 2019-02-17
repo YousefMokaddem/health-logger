@@ -1,19 +1,29 @@
 import React, { Component } from 'react';
 import AddFoodForm from './components/AddFoodForm';
+import Header from './components/Header';
+import AllFoods from './components/AllFoods';
+import {
+  BrowserRouter, //possibly switch to hashrouter after deployment if issues arise
+  Route
+} from 'react-router-dom';
 class App extends Component {
   state = {
-    food: []
+    foods: []
   }
   componentDidMount(){
     fetch('/all')
     .then(res => res.json())
-    .then(res => this.setState({food:res}));
+    .then(res => this.setState({foods:res}));
   }
   render() {
     return (
-      <div className="App">
-      <AddFoodForm />
-      </div>
+      <BrowserRouter>
+        <div>
+          <Header />
+          <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
+          <Route path="/add" component={AddFoodForm} />
+        </div>
+      </BrowserRouter>
     );
   }
 }

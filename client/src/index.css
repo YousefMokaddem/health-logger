@@ -1,3 +1,4 @@
+/* styles are currently just for rough idea of layouts */
 body {
   margin: 0;
   padding: 0;
@@ -6,9 +7,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #C7EAE4;
+}
+.food-grid{
+  padding-left: 100px;
+  padding-right: 100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 5%;
+}
+.food-card{
+  padding: 10px;
+  text-align: center;
+  background: #A7E8BD;
+  border: 1px solid #7BE0AD;
+  border-radius: 25px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+.food-card img{
+  border: 2px solid #7BE0AD;
+  border-radius: 10px;
 }

@@ -14,7 +14,7 @@ app.get('/all', (req,res) => {
 
 app.post('/add', (req,res) => {
     Food.create(req.body)
-        .then(() => {res.redirect(`/all`)});
+        .then(() => {res.redirect(`/foods`)});
 });
 
 const port = 5000;
