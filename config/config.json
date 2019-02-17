@@ -1,0 +1,14 @@
+{
+  "development": {
+    "storage": "foods.db",
+    "dialect": "sqlite"
+  },
+  "test": {
+    "storage": "foods.db",
+    "dialect": "sqlite"
+  },
+  "production": {
+    "storage": "foods.db",
+    "dialect": "sqlite"
+  }
+}
