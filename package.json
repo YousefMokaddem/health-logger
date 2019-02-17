@@ -5,11 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Yousef Mokaddem",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
     "express": "^4.16.4",
     "sequelize": "^4.42.0",

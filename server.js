@@ -1,34 +1,20 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-
+const Food = require('./models').foods;
+const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/all', (req,res)=>{
+app.get('/all', (req,res) => {
+    Food.findAll()
+        .then(books => {
+            res.json(books);
+        });
+});
 
-    //open database
-    let db = new sqlite3.Database('./foods.db', (err) => {
-        if (err) {
-        return console.error(err.message);
-        }
-        console.log('Connected to the SQlite database.');
-    });
-    
-    //run query
-    let sql = `SELECT * FROM foods;`
-    db.all(sql, (err, row) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        res.json(row);
-    });
-
-    //close database
-    db.close((err) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log('Closed the database connection.');
-    });
+app.post('/add', (req,res) => {
+    Food.create(req.body)
+        .then(() => {res.redirect(`/all`)});
 });
 
 const port = 5000;
