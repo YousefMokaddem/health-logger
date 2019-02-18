@@ -7,9 +7,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/all', (req,res) => {
     Food.findAll()
-        .then(books => {
-            res.json(books);
+        .then(foods => {
+            res.json(foods);
         });
+});
+
+app.get('/byId/:id', (req,res) => {
+    Food.findById(req.params.id)
+        .then(food => {
+            res.json(food);
+        });
+});
+
+app.post('/byId/:id', (req,res) => {
+    Food.findById(req.params.id)
+        .then(food => {
+            return food.update(req.body);
+        })
+        .then(res.redirect('/foods'));
 });
 
 app.post('/add', (req,res) => {

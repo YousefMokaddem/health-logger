@@ -12,6 +12,8 @@ class AllFoods extends Component{
         return this.props.foods.map((food, i) => {
             if(food !== null){
                 return <Food {...food} key={i} index={i} unmountFood={this.unmountFood} />
+            }else{
+                return null;
             }
         });
     }

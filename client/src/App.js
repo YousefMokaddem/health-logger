@@ -6,6 +6,7 @@ import {
   BrowserRouter, //possibly switch to hashrouter after deployment if issues arise
   Route
 } from 'react-router-dom';
+import EditFoodForm from './components/EditFoodForm';
 class App extends Component {
   state = {
     foods: []
@@ -15,6 +16,7 @@ class App extends Component {
     .then(res => res.json())
     .then(res => this.setState({foods:res}));
   }
+
   render() {
     return (
       <BrowserRouter>
@@ -22,6 +24,7 @@ class App extends Component {
           <Header />
           <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
           <Route path="/add" component={AddFoodForm} />
+          <Route path="/edit/:id" component={EditFoodForm} />
         </div>
       </BrowserRouter>
     );
