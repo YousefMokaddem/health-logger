@@ -2,7 +2,9 @@ import React from 'react';
 import {NavLink} from 'react-router-dom';
 const Food = ({name, calories, fat, carbs, protein, img, id, unmountFood, index}) => {
     const deleteFood = () => {
-        fetch(`/delete/${id}`);
+        fetch(`/delete/${id}`,{
+            method: "DELETE"
+        });
         unmountFood(index);
     }
     return(

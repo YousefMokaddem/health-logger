@@ -10,12 +10,36 @@ class EditFoodForm extends Component{
         .then(res=>res.json())
         .then(food => {
             this.setState({food:food, fetched:true});
+        },);
+    }
+    submitEdit = (e) => {
+        e.preventDefault();
+        let data = JSON.stringify({
+            name: e.target[0].value,
+            calories: e.target[1].value,
+            fat: e.target[2].value,
+            carbs: e.target[3].value,
+            protein: e.target[4].value,
+            img: e.target[5].value
+        })
+        
+        fetch(`/byId/${this.state.id}`, {
+            method: "PUT",
+            body: data,
+            headers:{
+                'Content-Type': 'application/json'
+            }
         });
+        this.props.history.push('/foods');
+        //update food in state aswell or force to refresh
+        let food = JSON.parse(data)
+        food = {...food, id: this.state.id}
+        this.props.editFoodState(this.state.id, food);
     }
     populateForm = (food) => {
         if(this.state.fetched){
             return(
-                <form action={`/byId/${this.state.id}`} method="post">
+                <form onSubmit={(e) => this.submitEdit(e)} >
             
                     <label htmlFor="name">Name</label>
                     <input type="text" defaultValue={food.name} name="name"/>
@@ -38,6 +62,10 @@ class EditFoodForm extends Component{
                     <input type="submit" value="Submit Changes"/>
                 
                 </form>
+            );
+        }else{
+            return(
+                <p>Loading...</p>
             );
         }
     }
