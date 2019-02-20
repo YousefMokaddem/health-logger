@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import AddFoodForm from './components/AddFoodForm';
 import Header from './components/Header';
 import AllFoods from './components/AllFoods';
+import NotFound from './components/NotFound';
+import EditFoodForm from './components/EditFoodForm';
 import {
   BrowserRouter, //possibly switch to hashrouter after deployment if issues arise
-  Route
+  Route,
+  Switch
 } from 'react-router-dom';
-import EditFoodForm from './components/EditFoodForm';
 class App extends Component {
   state = {
     foods: []
@@ -47,9 +49,12 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <Header />
-          <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
-          <Route path="/add" render={({history}) => <AddFoodForm addFoodToState={this.addFoodToState.bind(this)} history={history} />} />
-          <Route path="/edit/:id" render={({match,history}) => <EditFoodForm editFoodState={this.editFoodState.bind(this)} match={match} history={history} />} />
+          <Switch >
+            <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
+            <Route path="/add" render={({history}) => <AddFoodForm addFoodToState={this.addFoodToState.bind(this)} history={history} />} />
+            <Route path="/edit/:id" render={({match,history}) => <EditFoodForm editFoodState={this.editFoodState.bind(this)} match={match} history={history} />} />
+            <Route component={NotFound} />
+          </Switch>
         </div>
       </BrowserRouter>
     );
