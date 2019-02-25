@@ -1,29 +1,17 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('foods', {
+    return queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      email: {
         type: Sequelize.STRING
       },
-      calories: {
-        type: Sequelize.INTEGER
-      },
-      fat: {
-        type: Sequelize.INTEGER
-      },
-      carbs: {
-        type: Sequelize.INTEGER
-      },
-      protein: {
-        type: Sequelize.INTEGER
-      },
-      img: {
+      password: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -33,13 +21,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      userId :{
-        type: Sequelize.INTEGER
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('foods');
+    return queryInterface.dropTable('users');
   }
 };

@@ -1,14 +1,14 @@
 {
   "development": {
-    "storage": "foods.db",
+    "storage": "library.db",
     "dialect": "sqlite"
   },
   "test": {
-    "storage": "foods.db",
+    "storage": "library.db",
     "dialect": "sqlite"
   },
   "production": {
-    "storage": "foods.db",
+    "storage": "library.db",
     "dialect": "sqlite"
   }
 }
