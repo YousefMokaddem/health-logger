@@ -19,11 +19,11 @@ class App extends Component {
     .then(res => this.setState({foods:res}));
   }
   //to keep page in sync with server we have to update the food in the state or run a new fetch
-  editFoodState(id, food){
+  editFoodState(food){
     let newState = [];
     for(let i = 0; i < this.state.foods.length; i++){
       newState.push(this.state.foods[i]);
-      if (newState[i].id === parseInt(id)){
+      if (parseInt(newState[i].id) === parseInt(food.id)){
         newState[i] = food;
       }
     }

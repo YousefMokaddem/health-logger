@@ -16,12 +16,12 @@ class EditFoodForm extends Component{
         e.preventDefault();
         let data = JSON.stringify({
             name: e.target[0].value,
-            calories: e.target[1].value,
-            fat: e.target[2].value,
-            carbs: e.target[3].value,
-            protein: e.target[4].value,
+            calories: parseInt(e.target[1].value),
+            fat: parseInt(e.target[2].value),
+            carbs: parseInt(e.target[3].value),
+            protein: parseInt(e.target[4].value),
             img: e.target[5].value
-        })
+        });
         
         fetch(`/api/foods/${this.state.id}`, {
             method: "PUT",
@@ -32,9 +32,8 @@ class EditFoodForm extends Component{
         });
         this.props.history.push('/foods');
         //update food in state aswell or force to refresh
-        let food = JSON.parse(data)
-        food = {...food, id: this.state.id}
-        this.props.editFoodState(this.state.id, food);
+        let food = {...JSON.parse(data), id: this.state.id};
+        this.props.editFoodState(food);
     }
     populateForm = (food) => {
         if(this.state.fetched){
