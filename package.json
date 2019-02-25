@@ -12,6 +12,8 @@
   "author": "Yousef Mokaddem",
   "license": "MIT",
   "dependencies": {
+    "basic-auth": "^2.0.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
     "express": "^4.16.4",
