@@ -14,7 +14,7 @@ class App extends Component {
     foods: []
   }
   componentDidMount(){
-    fetch('/all')
+    fetch('/api/foods')
     .then(res => res.json())
     .then(res => this.setState({foods:res}));
   }

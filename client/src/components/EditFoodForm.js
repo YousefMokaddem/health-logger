@@ -6,7 +6,7 @@ class EditFoodForm extends Component{
         fetched: false
     }
     componentDidMount(){
-        fetch(`/byId/${this.state.id}`)
+        fetch(`/api/foods/${this.state.id}`)
         .then(res=>res.json())
         .then(food => {
             this.setState({food:food, fetched:true});
@@ -23,7 +23,7 @@ class EditFoodForm extends Component{
             img: e.target[5].value
         })
         
-        fetch(`/byId/${this.state.id}`, {
+        fetch(`/api/foods/${this.state.id}`, {
             method: "PUT",
             body: data,
             headers:{

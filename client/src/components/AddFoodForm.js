@@ -13,7 +13,7 @@ const AddFoodForm = (props) => {
             img: e.target[5].value
         })
         
-        fetch(`/add`, {
+        fetch(`/api/foods`, {
             method: "POST",
             body: data,
             headers:{
