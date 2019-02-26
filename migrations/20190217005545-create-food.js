@@ -23,6 +23,12 @@ module.exports = {
       protein: {
         type: Sequelize.INTEGER
       },
+      amount: {
+        type: Sequelize.INTEGER
+      },
+      isSolid: {
+        type: Sequelize.BOOLEAN
+      },
       img: {
         type: Sequelize.STRING
       },
@@ -35,6 +41,9 @@ module.exports = {
         type: Sequelize.DATE
       },
       userId :{
+        type: Sequelize.INTEGER
+      },
+      dayId :{
         type: Sequelize.INTEGER
       }
     });
