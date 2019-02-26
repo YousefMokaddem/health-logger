@@ -109,6 +109,7 @@ router.get('/foods/:fId', (req,res) => {
 router.put('/foods/:fId', authenticateUser, (req,res) => {
     Food.findById(req.params.fId)
         .then(food => {
+            // ensure user owns the food
             if(req.currentUser.id === food.userId){
                 return food.update(req.body);
             }else{
@@ -132,11 +133,18 @@ router.post('/foods', authenticateUser, (req,res) => {
 // delete food
 router.delete('/foods/:fId', (req,res) => {
     Food.findById(req.params.fId).then(food => {  
-        if(food) {
-            food.destroy();
-            res.end();
-        } else {
-            res.send(404);
+        // ensure user owns the food
+        if(req.currentUser.id === food.userId){
+            if(food) {
+                food.destroy();
+                res.end();
+            } else {
+                res.send(404);
+            }
+        }else{
+            const err = new Error("Access Denied");
+            err.status = 401;
+            return next(err);
         }})
         .catch(error => {
             res.send(500, error);
@@ -164,26 +172,39 @@ router.get('/days/:dId', authenticateUser, (req,res) => {
         include: [
             {model: Food}
         ]})
-        .then(day => res.json(day));
+        .then(day => {
+            // ensure user owns the day
+            if(req.currentUser.id === day.userId){
+                res.json(day)
+            }else{
+                const err = new Error("Access Denied");
+                err.status = 401;
+                return next(err);
+            }
+        });
 });
 
 // add food to day
 // food data will be pulled from database using fId, and day using dId
 // TODO add "amount" to req.body so that the nutrition can be calculated on client side
 router.post('/days/:dId-:fId', authenticateUser, (req,res) => {
-    // TODO make sure user owns the day
     Day.findById(req.params.dId)
     .then(day => {
-        Food.findOne({where: {id: req.params.fId}})
-            .then(food => {
-                console.log(food);
-                food.dataValues.id = null;
-                console.log(food);
-                day.createFood(food.dataValues)
-                    .then(food => {
-                        res.json(food.id);
-                    });
-            })
+        // ensure user owns the day
+        if (req.currentUser === day.userId){
+            Food.findOne({where: {id: req.params.fId}})
+                .then(food => {
+                    food.dataValues.id = null;
+                    day.createFood(food.dataValues)
+                        .then(food => {
+                            res.json(food.id);
+                        });
+                })
+        }else{
+            const err = new Error("Access Denied");
+            err.status = 401;
+            return next(err);
+        }
     });
 });
 
@@ -191,13 +212,18 @@ router.post('/days/:dId-:fId', authenticateUser, (req,res) => {
 
 // delete the day
 router.delete('/days/:dId', authenticateUser, (req,res) => {
-    //TODO make sure user owns the day
     Day.findById(req.params.fId).then(day => {  
-        if(day) {
-            day.destroy();
-            res.end();
-        } else {
-            res.send(404);
+        if(req.currentUser.id === day.userId){
+            if(day) {
+                day.destroy();
+                res.end();
+            } else {
+                res.send(404);
+            }
+        }else{
+            const err = new Error("Access Denied");
+            err.status = 401;
+            return next(err);
         }})
         .catch(error => {
             res.send(500, error);
