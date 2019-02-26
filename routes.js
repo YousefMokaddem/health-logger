@@ -106,11 +106,14 @@ router.get('/foods/:fId', (req,res) => {
 });
 
 // edit food
-router.put('/foods/:fId', authenticateUser, (req,res) => {
-    Food.findById(req.params.fId)
+router.put('/foods/:fId', authenticateUser, (req,res,next) => {
+    Food.findOne({
+        where: { id:req.params.fId},
+        include:{model: User, attributes: ['id']}
+    })
         .then(food => {
             // ensure user owns the food
-            if(req.currentUser.id === food.userId){
+            if(req.currentUser.id === food.User.id){
                 return food.update(req.body);
             }else{
                 const err = new Error("Access Denied");
@@ -131,23 +134,29 @@ router.post('/foods', authenticateUser, (req,res) => {
 });
 
 // delete food
-router.delete('/foods/:fId', (req,res) => {
-    Food.findById(req.params.fId).then(food => {  
-        // ensure user owns the food
-        if(req.currentUser.id === food.userId){
-            if(food) {
-                food.destroy();
-                res.end();
-            } else {
-                res.send(404);
+router.delete('/foods/:fId', authenticateUser, (req,res,next) => {
+    Food.findOne({
+        where: { id:req.params.fId},
+        include:{model: User, attributes: ['id']}
+    })
+        .then(food => {  
+            // ensure user owns the food
+            if(req.currentUser.id === food.User.id){
+                // TODO re-organize if statements here
+                if(food) {
+                    food.destroy();
+                    res.end();
+                } else {
+                    res.send(404);
+                }
+            }else{
+                const err = new Error("Access Denied");
+                err.status = 401;
+                return next(err);
             }
-        }else{
-            const err = new Error("Access Denied");
-            err.status = 401;
-            return next(err);
-        }})
+        })
         .catch(error => {
-            res.send(500, error);
+            res.status(500).send(error);
         });
 });
 
@@ -167,14 +176,15 @@ router.get('/days', authenticateUser, (req,res) => {
 });
 
 // return a day with it's foods
-router.get('/days/:dId', authenticateUser, (req,res) => {
+router.get('/days/:dId', authenticateUser, (req,res,next) => {
     Day.find({where: {id: req.params.dId},
         include: [
-            {model: Food}
+            {model: Food},
+            {model: User, attributes: ['id']}
         ]})
         .then(day => {
             // ensure user owns the day
-            if(req.currentUser.id === day.userId){
+            if(req.currentUser.id === day.User.id){
                 res.json(day)
             }else{
                 const err = new Error("Access Denied");
@@ -187,11 +197,14 @@ router.get('/days/:dId', authenticateUser, (req,res) => {
 // add food to day
 // food data will be pulled from database using fId, and day using dId
 // TODO add "amount" to req.body so that the nutrition can be calculated on client side
-router.post('/days/:dId-:fId', authenticateUser, (req,res) => {
-    Day.findById(req.params.dId)
+router.post('/days/:dId-:fId', authenticateUser, (req,res,next) => {
+    Day.findOne({
+        where: { id:req.params.dId},
+        include:{model: User, attributes: ['id']}
+    })
     .then(day => {
         // ensure user owns the day
-        if (req.currentUser === day.userId){
+        if (req.currentUser.id === day.User.id){
             Food.findOne({where: {id: req.params.fId}})
                 .then(food => {
                     food.dataValues.id = null;
@@ -210,20 +223,25 @@ router.post('/days/:dId-:fId', authenticateUser, (req,res) => {
 
 // to delete food from day just use the DELETE /foods/:fId route
 
-// delete the day
-router.delete('/days/:dId', authenticateUser, (req,res) => {
-    Day.findById(req.params.fId).then(day => {  
-        if(req.currentUser.id === day.userId){
-            if(day) {
-                day.destroy();
-                res.end();
-            } else {
-                res.send(404);
-            }
-        }else{
-            const err = new Error("Access Denied");
-            err.status = 401;
-            return next(err);
+// delete the day and it's foods
+router.delete('/days/:dId', authenticateUser, (req,res,next) => {
+    Day.findOne({
+        where: { id:req.params.dId},
+        include:{model: User, attributes: ['id']}
+    })
+        .then(day => {  
+            // ensure user owns the day
+            if(req.currentUser.id === day.User.id){
+                if(day) {
+                    day.destroy();
+                    res.end();
+                } else {
+                    res.send(404);
+                }
+            }else{
+                const err = new Error("Access Denied");
+                err.status = 401;
+                return next(err);
         }})
         .catch(error => {
             res.send(500, error);
