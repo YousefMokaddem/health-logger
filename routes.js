@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('./models').User;
 const Food = require('./models').Food;
+const Day = require('./models').Day;
 const bcryptjs = require('bcryptjs');
 const auth = require('basic-auth');
 
@@ -90,22 +91,23 @@ router.get('/users', authenticateUser, (req, res) => {
 });
 
 // get all foods
+// don't show the foods with a day id because they are clones created for users to log foods
 router.get('/foods', (req,res) => {
-    Food.findAll({})
+    Food.findAll({where: {dayId: null}})
     .then(foods => res.json(foods));
 });
 
 // get food by id
-router.get('/foods/:id', (req,res) => {
-    Food.findById(req.params.id)
+router.get('/foods/:fId', (req,res) => {
+    Food.findById(req.params.fId)
         .then(food => {
             res.json(food);
         });
 });
 
 // edit food
-router.put('/foods/:id', authenticateUser, (req,res) => {
-    Food.findById(req.params.id)
+router.put('/foods/:fId', authenticateUser, (req,res) => {
+    Food.findById(req.params.fId)
         .then(food => {
             if(req.currentUser.id === food.userId){
                 return food.update(req.body);
@@ -119,22 +121,85 @@ router.put('/foods/:id', authenticateUser, (req,res) => {
 });
 
 // add new food
-router.post('/foods', (req,res) => {
-    //change to user.createFood for user id field
-    Food.create(req.body)
-        .then((result) => {res.json(result.id)});
+router.post('/foods', authenticateUser, (req,res) => {
+    User.findById(req.currentUser.id)
+        .then(user => {
+            user.createFood(req.body)
+                .then(result => res.json(result.id));
+        });
 });
 
 // delete food
-router.delete('/foods/:id', (req,res) => {
-    Food.findById(req.params.id).then(function(food){  
+router.delete('/foods/:fId', (req,res) => {
+    Food.findById(req.params.fId).then(food => {  
         if(food) {
             food.destroy();
             res.end();
         } else {
             res.send(404);
         }})
-        .catch(function(error){
+        .catch(error => {
+            res.send(500, error);
+        });
+});
+
+// create new day
+router.post('/days', authenticateUser, (req,res) => {
+    req.currentUser.createDay(req.body)
+        .then(res.end());
+});
+
+// get user's days
+router.get('/days', authenticateUser, (req,res) => {
+    User.find({where:{id: req.currentUser.id},
+        include: [
+            {model: Day}
+        ]})
+        .then(user => res.json(user.Days));
+});
+
+// return a day with it's foods
+router.get('/days/:dId', authenticateUser, (req,res) => {
+    Day.find({where: {id: req.params.dId},
+        include: [
+            {model: Food}
+        ]})
+        .then(day => res.json(day));
+});
+
+// add food to day
+// food data will be pulled from database using fId, and day using dId
+// TODO add "amount" to req.body so that the nutrition can be calculated on client side
+router.post('/days/:dId-:fId', authenticateUser, (req,res) => {
+    // TODO make sure user owns the day
+    Day.findById(req.params.dId)
+    .then(day => {
+        Food.findOne({where: {id: req.params.fId}})
+            .then(food => {
+                console.log(food);
+                food.dataValues.id = null;
+                console.log(food);
+                day.createFood(food.dataValues)
+                    .then(food => {
+                        res.json(food.id);
+                    });
+            })
+    });
+});
+
+// to delete food from day just use the DELETE /foods/:fId route
+
+// delete the day
+router.delete('/days/:dId', authenticateUser, (req,res) => {
+    //TODO make sure user owns the day
+    Day.findById(req.params.fId).then(day => {  
+        if(day) {
+            day.destroy();
+            res.end();
+        } else {
+            res.send(404);
+        }})
+        .catch(error => {
             res.send(500, error);
         });
 });
