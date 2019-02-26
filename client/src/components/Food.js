@@ -17,6 +17,7 @@ const Food = ({name, calories, fat, carbs, protein, img, id, unmountFood, index}
             <p>Fat: {fat}</p>
             <p>Carbohydrates: {carbs}</p>
             <p>Protein: {protein}</p>
+            {/* only show the delete and edit buttons if foods[i].User.id === user.id*/}
             <button onClick={() => deleteFood()}>Delete</button>
             <NavLink to={`/edit/${id}`}><button>Edit</button></NavLink>
         </div>

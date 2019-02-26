@@ -19,9 +19,8 @@ const AddFoodForm = (props) => {
             headers:{
                 'Content-Type': 'application/json'
             }
-        }).then(res => {
-            return res.json();
-        }).then((id) => {
+        }).then(res => res.json())
+            .then((id) => {
             let food = JSON.parse(data)
             food = {...food, id: id}
             props.addFoodToState(food);
@@ -31,6 +30,7 @@ const AddFoodForm = (props) => {
 
     return(
         <form onSubmit={(e) => submitAdd(e)}>
+            <h2>Please fill in nutritional values based on a serving size of 100g/ml</h2>
         
             <label htmlFor="name">Name</label>
             <input type="text" name="name"/>

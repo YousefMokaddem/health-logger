@@ -4,6 +4,8 @@ import Header from './components/Header';
 import AllFoods from './components/AllFoods';
 import NotFound from './components/NotFound';
 import EditFoodForm from './components/EditFoodForm';
+import Login from './components/Login';
+import Register from './components/Register';
 import {
   BrowserRouter, //possibly switch to hashrouter after deployment if issues arise
   Route,
@@ -50,6 +52,9 @@ class App extends Component {
         <div>
           <Header />
           <Switch >
+            {/* display login screen if not logged in and user info if logged in. */}
+            <Route exact path="/" render={() => <Login />} />
+            <Route path="/register" render={() => <Register />} />
             <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
             <Route path="/add" render={({history}) => <AddFoodForm addFoodToState={this.addFoodToState.bind(this)} history={history} />} />
             <Route path="/edit/:id" render={({match,history}) => <EditFoodForm editFoodState={this.editFoodState.bind(this)} match={match} history={history} />} />
