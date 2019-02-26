@@ -86,15 +86,20 @@ router.post('/users', (req,res,next) => {
 router.get('/users', authenticateUser, (req, res) => {
     const user = req.currentUser;
     res.json({
-        email: user.email
+        id: user.id
     });
 });
 
 // get all foods
 // don't show the foods with a day id because they are clones created for users to log foods
 router.get('/foods', (req,res) => {
-    Food.findAll({where: {dayId: null}})
-    .then(foods => res.json(foods));
+    Food.findAll({where: {dayId: null}, include:{model: User, attributes: ['id']}})
+    .then(foods => {
+        let foodsWithUserId = foods.map(food => {
+            return {...food.dataValues};
+        });
+        res.json(foodsWithUserId);
+    });
 });
 
 // get food by id
