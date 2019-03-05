@@ -16,14 +16,9 @@ const AddFoodForm = (props) => {
         fetch(`/api/foods`, {
             method: "POST",
             body: data,
-            headers:{
-                'Content-Type': 'application/json'
-            }
+            headers:props.user.headers
         }).then(res => res.json())
             .then((id) => {
-            let food = JSON.parse(data)
-            food = {...food, id: id}
-            props.addFoodToState(food);
             props.history.push('/foods');
         });
     }

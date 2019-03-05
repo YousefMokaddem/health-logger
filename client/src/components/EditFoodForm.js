@@ -26,14 +26,9 @@ class EditFoodForm extends Component{
         fetch(`/api/foods/${this.state.id}`, {
             method: "PUT",
             body: data,
-            headers:{
-                'Content-Type': 'application/json'
-            }
+            headers: this.props.user.headers
         });
         this.props.history.push('/foods');
-        //update food in state aswell or force to refresh
-        let food = {...JSON.parse(data), id: this.state.id};
-        this.props.editFoodState(food);
     }
     populateForm = (food) => {
         if(this.state.fetched){
