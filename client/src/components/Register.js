@@ -3,12 +3,11 @@ import React, {Component} from 'react';
 class Register extends Component {
 
     state = {
-        msg: false,
-        message: {}
+        message: null
     }
 
     printErr = () => {
-        if(this.state.msg){
+        if(this.state.message){
             return(
                 <h2>{this.state.message}</h2>
             );
@@ -30,7 +29,6 @@ class Register extends Component {
             }
         })
             .then(res => {
-                console.log(res);
                 if(res.status !== 201){
                     return res.json()
                     .then(res =>
