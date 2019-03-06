@@ -1,63 +1,54 @@
 import React, { Component } from 'react';
-import AddFoodForm from './components/AddFoodForm';
-import Header from './components/Header';
-import AllFoods from './components/AllFoods';
-import NotFound from './components/NotFound';
-import EditFoodForm from './components/EditFoodForm';
-import Login from './components/Login';
-import Register from './components/Register';
 import {
-  BrowserRouter, //possibly switch to hashrouter after deployment if issues arise
+  BrowserRouter,
   Route,
   Switch
 } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
+import CreateFood from './components/CreateFood';
+import Header from './components/Header';
+import Foods from './components/Foods';
+import NotFound from './components/NotFound';
+import EditFoodForm from './components/EditFoodForm';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
+import CreateDay from './components/CreateDay';
+import Days from './components/Days';
+import AddFood from './components/AddFood.js'; //for some reason, can't find this file without .js
 class App extends Component {
   state = {
-    foods: []
+    user: null,
+    day: undefined
   }
-  componentDidMount(){
-    fetch('/api/foods')
-    .then(res => res.json())
-    .then(res => this.setState({foods:res}));
-  }
-  //to keep page in sync with server we have to update the food in the state or run a new fetch
-  editFoodState(food){
-    let newState = [];
-    for(let i = 0; i < this.state.foods.length; i++){
-      newState.push(this.state.foods[i]);
-      if (parseInt(newState[i].id) === parseInt(food.id)){
-        newState[i] = food;
-      }
-    }
+
+  //store user in state after sign in
+  setUser(email, headers, id){
     this.setState({
-      foods: newState
+      user:{
+        email,headers,id
+      }
     });
   }
-  //to keep page in sync with server we have to add the food in the state or run a new fetch
-  addFoodToState(food){
-    let newState = [];
-    for(let i = 0; i < this.state.foods.length; i++){
-      if(this.state.foods[i] !== null){
-        newState.push(this.state.foods[i]);
-      }
-    }
-    newState.push(food);
-    this.setState({
-      foods: newState
-    });
+  //add day to state after selected
+  selectDay(day){
+    this.setState({day:{...day}});
   }
+
   render() {
     return (
       <BrowserRouter>
         <div>
-          <Header />
+          <Header day={this.state.day} user={this.state.user}/>
           <Switch >
             {/* display login screen if not logged in and user info if logged in. */}
-            <Route exact path="/" render={() => <Login />} />
-            <Route path="/register" render={() => <Register />} />
-            <Route path="/foods" render={() => <AllFoods foods={this.state.foods} />} />
-            <Route path="/add" render={({history}) => <AddFoodForm addFoodToState={this.addFoodToState.bind(this)} history={history} />} />
-            <Route path="/edit/:id" render={({match,history}) => <EditFoodForm editFoodState={this.editFoodState.bind(this)} match={match} history={history} />} />
+            <Route exact path="/" render={() => <SignIn setUser={this.setUser.bind(this)}/>} />
+            <Route path="/register" render={() => <SignUp />} />
+            <PrivateRoute user={this.state.user} path="/foods/create" component={({history}) => <CreateFood user={this.state.user} history={history} />} />
+            <PrivateRoute user={this.state.user} path="/foods" component={() => <Foods user={this.state.user} day={this.state.day} foods={this.state.foods} />} />
+            <PrivateRoute user={this.state.user} path="/edit/:id" component={({match,history}) => <EditFoodForm user={this.state.user} match={match} history={history} />} />
+            <PrivateRoute user={this.state.user} path="/days/create" component={() => <CreateDay user={this.state.user} />}/>
+            <PrivateRoute user={this.state.user} path="/days/addfood/:id" component={(props) => <AddFood renderProps={props} day={this.state.day} user={this.state.user} />}/>
+            <PrivateRoute user={this.state.user} path="/days" component={() => <Days selectDay={this.selectDay.bind(this)} user={this.state.user} />} />
             <Route component={NotFound} />
           </Switch>
         </div>
