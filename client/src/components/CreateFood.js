@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AddFoodForm = (props) => {
+const CreateFood = (props) => {
     
     const submitAdd = (e) => {
         e.preventDefault();
@@ -51,4 +51,4 @@ const AddFoodForm = (props) => {
     );
 }
 
-export default AddFoodForm;
+export default CreateFood;

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-class AddFoodToDay extends Component {
+class AddFood extends Component {
     
     addFood(e){
         e.preventDefault();
@@ -23,4 +23,4 @@ class AddFoodToDay extends Component {
     }
 }
 
-export default AddFoodToDay;
+export default AddFood;

@@ -15,9 +15,9 @@ class Day extends Component {
             const totalCals = this.state.food.reduce((total, curr)=>{return total + (curr.calories * (curr.amount/100))},0)
             return(
                 <div>
-                {this.state.food.map(food => {
+                {this.state.food.map((food, i) => {
                     return(
-                        <div>
+                        <div key={i}>
                             <p>{food.amount} of {food.name} = {food.calories * (food.amount/100)}</p> {/*add buttons to edit amounts or remove foods completely*/}
                         </div>
                     );

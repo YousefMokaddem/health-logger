@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Food from './Food';
 
-class AllFoods extends Component{
+class Foods extends Component{
 
     state={
         foods:[]
@@ -33,4 +33,4 @@ class AllFoods extends Component{
     
 }
 
-export default AllFoods;
+export default Foods;
