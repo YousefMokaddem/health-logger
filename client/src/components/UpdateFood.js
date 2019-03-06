@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class EditFoodForm extends Component{
+class UpdateFood extends Component{
     state = {
         id: this.props.match.params.id,
         fetched: false
@@ -75,4 +75,4 @@ class EditFoodForm extends Component{
     
 }
 
-export default EditFoodForm;
+export default UpdateFood;
