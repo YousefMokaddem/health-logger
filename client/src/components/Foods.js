@@ -7,9 +7,7 @@ class Foods extends Component{
         foods:[]
     }
     componentDidMount(){
-        fetch('/api/foods')
-        .then(res => res.json())
-        .then(res => this.setState({foods:res}));
+        this.reFetch();
     }
 
     reFetch(){
@@ -25,8 +23,11 @@ class Foods extends Component{
     }
     render(){
         return(
-            <div className="food-grid">
-                {this.displayFoods()}
+            <div>
+                <h2>Foods:</h2>
+                <div className="food-grid">
+                    {this.displayFoods()}
+                </div>
             </div>
         );
     };

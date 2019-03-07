@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {NavLink} from 'react-router-dom';
 
 class SignIn extends Component {
     
@@ -54,19 +55,23 @@ class SignIn extends Component {
 
     render(){
         return(
-            <form onSubmit={(e) => this.signIn(e)}>
-    
-                <h2>Sign In</h2>
-                {this.printErr()}
-    
-                <label htmlFor="email">Email</label>
-                <input type="text" name="email"/>
-    
-                <label htmlFor="password">Password</label>
-                <input type="password" name="password"/>
-    
-                <button type="submit">Submit</button>
-            </form>
+            <div>
+                <form onSubmit={(e) => this.signIn(e)}>
+        
+                    <h2>Sign In</h2>
+                    {this.printErr()}
+        
+                    <label htmlFor="email">Email</label>
+                    <input type="text" name="email"/>
+        
+                    <label htmlFor="password">Password</label>
+                    <input type="password" name="password"/>
+        
+                    <button type="submit">Submit</button>
+                </form>
+                <p>Don't have an account? <NavLink to="/signup">Sign up!</NavLink></p>
+            </div>
+
         );
     }    
 }
