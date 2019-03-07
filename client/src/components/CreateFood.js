@@ -25,7 +25,7 @@ const CreateFood = (props) => {
 
     return(
         <form onSubmit={(e) => submitAdd(e)}>
-            <h2>Please fill in nutritional values based on a serving size of 100g/ml</h2>
+            <p>Please fill in nutritional values based on a serving size of 100g/ml</p>
         
             <label htmlFor="name">Name</label>
             <input type="text" name="name"/>
