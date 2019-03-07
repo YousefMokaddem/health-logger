@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     date: {
       type:DataTypes.DATEONLY,
       validate: {
-        isDate: {args: true, message: "Please provide a valid date"}
+        isDate: {args: true, msg: "Please provide a valid date"}
       }
     }
   }, {});
