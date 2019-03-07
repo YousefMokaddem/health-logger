@@ -1,7 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Day = sequelize.define('Day', {
-    date: DataTypes.DATEONLY
+    date: {
+      type:DataTypes.DATEONLY,
+      validate: {
+        isDate: {args: true, message: "Please provide a valid date"}
+      }
+    }
   }, {});
   Day.associate = function(models) {
     // associations can be defined here

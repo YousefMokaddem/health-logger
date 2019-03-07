@@ -31,6 +31,15 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+/**
+ * Monkey patch issue causing deprecation warning when customizing allowNull validation error
+ *
+ * See https://github.com/sequelize/sequelize/issues/1500
+ */
+Sequelize.Validator.notNull = function (item) {
+  return !this.isNull(item);
+};
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

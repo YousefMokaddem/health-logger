@@ -5,8 +5,18 @@ module.exports = (sequelize, DataTypes) => {
   // the "amount" will be added when users add food to days, and will be used as a multiplier
   // (amount/100) * all of the nutritional values
   const Food = sequelize.define('Food', {
-    name: DataTypes.STRING,
-    calories: DataTypes.INTEGER,
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {args: true, msg: "Please provide a value for name"}
+      }
+    },
+    calories: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notNull: {args: true, msg: "Please provide a value for calories"}
+      }
+    },
     fat: DataTypes.INTEGER,
     carbs: DataTypes.INTEGER,
     protein: DataTypes.INTEGER,
