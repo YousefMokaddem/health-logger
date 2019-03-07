@@ -27,8 +27,12 @@ class UpdateFood extends Component{
             method: "PUT",
             body: data,
             headers: this.props.user.headers
+        }).then(res => {
+            if(res.status === 204){
+                this.props.history.push('/foods');
+            }
         });
-        this.props.history.push('/foods');
+        
     }
     populateForm = (food) => {
         if(this.state.fetched){
