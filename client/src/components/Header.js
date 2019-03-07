@@ -12,8 +12,8 @@ class Header extends Component {
                 <NavLink to="/foods/create">New Food</NavLink>
                 <NavLink to="/days">Days</NavLink>
                 <NavLink to="/days/create">New Day</NavLink>
-                <button onClick={() => this.props.signOut()}>Sign Out</button>
-                <h3>Welcome {this.props.user.email}</h3>
+                <NavLink to="/signout">Sign Out</NavLink>
+                <h3>Welcome {this.props.user.username}</h3>
             </nav>
             );
         }
