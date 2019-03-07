@@ -10,16 +10,29 @@ class SignUp extends Component {
     printErr = () => {
         if(this.state.message){
             return(
-                <h2>{this.state.message}</h2>
+                <p>{this.state.message}</p>
             );
         }
     }
 
     register = (e) => {
         e.preventDefault();
+        if(e.target[2].value.length < 6 || e.target[2].value.length > 12){
+            this.setState({
+                message: "Password must be between 6 and 12 characters"
+            });
+            return;
+        }
+        if(e.target[2].value !== e.target[3].value){
+            this.setState({
+                message: "Passwords must match"
+            });
+            return;
+        }
         let data = JSON.stringify({
-            email: e.target[0].value,
-            password: e.target[1].value
+            username: e.target[0].value,
+            email: e.target[1].value,
+            password: e.target[2].value
         });
 
         fetch(`/api/users`, {
@@ -32,17 +45,18 @@ class SignUp extends Component {
             .then(res => {
                 if(res.status !== 201){
                     return res.json()
-                    .then(res =>
+                    .then(res => {
+                        const message = res.message.split('Validation error: ');
                         this.setState({
-                            message: res.message,
-                            msg: true
+                            message: message
                         })
+                    }
                     );
                 }else{
                     this.setState({
-                        message: "Successfully registered!",
-                        msg: true
+                        message: "Successfully registered!"
                     });
+                    this.props.history.push('/');
                 }
             });
     }
@@ -53,11 +67,17 @@ class SignUp extends Component {
                     <h2>Sign Up</h2>
                     {this.printErr()}
 
+                    <label htmlFor="username">Username</label>
+                    <input type="text" name="username"/>
+
                     <label htmlFor="email">Email</label>
                     <input type="text" name="email"/>
                     
                     <label htmlFor="password">Password</label>
                     <input type="password" name="password"/>
+
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirmPassword"/>
 
                     <button type="submit">Submit</button>
                 </form>

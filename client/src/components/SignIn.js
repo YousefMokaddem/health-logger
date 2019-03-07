@@ -10,7 +10,7 @@ class SignIn extends Component {
     printErr = () => {
         if(this.state.message){
             return(
-                <h2>{this.state.message}</h2>
+                <p>{this.state.message}</p>
             );
         }
     }
@@ -47,7 +47,7 @@ class SignIn extends Component {
                     });
                     res.json()
                         .then(res => {
-                            this.props.setUser(email, headers, res.id);
+                            this.props.setUser(email, headers, res.id, res.username);
                         })
                 }
             });
