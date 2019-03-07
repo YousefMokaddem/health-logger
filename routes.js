@@ -119,14 +119,17 @@ router.put('/foods/:fId', authenticateUser, (req,res,next) => {
         .then(food => {
             // ensure user owns the food
             if(req.currentUser.id === food.User.id){
-                return food.update(req.body);
+                return food.update(req.body)
+                    .then(() => {
+                        res.status(204);
+                        res.end();
+                    });
             }else{
                 const err = new Error("Access Denied");
                 err.status = 401;
                 return next(err);
             }
-        })
-        .then(res.end());
+        });
 });
 
 // add new food
@@ -141,24 +144,15 @@ router.post('/foods', authenticateUser, (req,res) => {
 // delete food
 router.delete('/foods/:fId', authenticateUser, (req,res,next) => {
     Food.findOne({
-        where: { id:req.params.fId},
-        include:{model: User, attributes: ['id']}
+        where: { id:req.params.fId}
     })
         .then(food => {  
-            // ensure user owns the food
-            if(req.currentUser.id === food.User.id){
-                // TODO re-organize if statements here
                 if(food) {
                     food.destroy();
                     res.end();
                 } else {
                     res.send(404);
                 }
-            }else{
-                const err = new Error("Access Denied");
-                err.status = 401;
-                return next(err);
-            }
         })
         .catch(error => {
             res.status(500).send(error);
@@ -166,7 +160,15 @@ router.delete('/foods/:fId', authenticateUser, (req,res,next) => {
 });
 
 // create new day
-router.post('/days', authenticateUser, (req,res) => {
+router.post('/days', authenticateUser, (req,res,next) => {
+    // validate day
+    console.log(req.body);
+    if(!/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(req.body.date)){
+        let err = new Error("Bad Request - invalid date");
+        err.status = 400;
+        return next(err)
+    };
+
     req.currentUser.createDay(req.body)
         .then(res.end());
 });
@@ -201,7 +203,7 @@ router.get('/days/:dId', authenticateUser, (req,res,next) => {
 
 // add food to day
 // food data will be pulled from database using fId, and day using dId
-// TODO add "amount" to req.body so that the nutrition can be calculated on client side
+// add "amount" to req.body from client side so that the nutrition can be calculated on client side
 router.post('/days/:dId-:fId', authenticateUser, (req,res,next) => {
     Day.findOne({
         where: { id:req.params.dId},
@@ -213,6 +215,7 @@ router.post('/days/:dId-:fId', authenticateUser, (req,res,next) => {
             Food.findOne({where: {id: req.params.fId}})
                 .then(food => {
                     food.dataValues.id = null;
+                    food.dataValues.amount = req.body.amount;
                     day.createFood(food.dataValues)
                         .then(food => {
                             res.json(food.id);
