@@ -2,7 +2,10 @@ import React,{Component} from 'react';
 
 
 class Day extends Component {
-    state={food:[]}
+    state={
+        food:[],
+        edit:[]
+    }
 
     componentDidMount(){
         this.reFetch();
@@ -25,11 +28,44 @@ class Day extends Component {
             }
         });
     }
+
+    triggerEdit(id){
+        this.setState(prevState => ({
+            edit: (prevState.edit.map((item, i) => (id===i)? true : false))
+        }));
+    }
     
+    editAmount(e, id){
+        e.preventDefault();
+        const data = JSON.stringify({amount: e.target[0].value});
+
+        fetch(`/api/foods/${id}`, {
+            method: "PUT",
+            body: data,
+            headers: this.props.user.headers
+        })
+            .then( res => {
+                this.setState(prevState => ({
+                    edit: (prevState.edit.map(i => false))
+                }));
+                if(res.status === 204){
+                    this.reFetch();
+                }
+            })
+    }
+
     reFetch(){
         fetch(`/api/days/${this.props.day.id}`,{headers:this.props.user.headers})
             .then(res => res.json())
-            .then(day => this.setState({food:day.Food}));
+            .then(day => {
+                this.setState({food:day.Food}, () => {
+                    let edit = [];
+                    for (let i = 0; i<this.state.food.length; i++){
+                        edit.push(false);
+                    }
+                    this.setState({edit: edit});
+                });
+            });
     }
 
     showFoods(){
@@ -42,7 +78,17 @@ class Day extends Component {
                         <div key={i}>
                             <p>{food.amount} of {food.name} = {food.calories * (food.amount/100)}</p>
                             <button onClick={() => this.deleteFood(food.id)}>Delete</button>
-                            {/*add buttons to edit amounts or remove foods completely*/}
+                            {/* if edit is true, show the form to update amount, else show the edit button */}
+                            {this.state.edit[i] ? 
+                                <form onSubmit={(e) => this.editAmount(e,food.id)}>
+                                    <label>
+                                        Amount: <input type="text" name="amount" defaultValue={food.amount} />
+                                    </label>
+                                    <button type="submit">Submit</button>
+                                </form>
+                                : 
+                                <button onClick={() => this.triggerEdit(i)}>Edit</button>
+                            }
                         </div>
                     );
                 })}
