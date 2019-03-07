@@ -50,19 +50,12 @@ const authenticateUser = async (req,res,next) => {
 
 // create new user
 router.post('/users', (req,res,next) => {
-    const user = new User(req.body);
     // hash the user's password
-    user.password = bcryptjs.hashSync(user.password);
+    req.body.password = bcryptjs.hashSync(req.body.password);
 
-    // validate email
-    if(!/^[^@]+@[^@.]+\.[a-z]+$/i.test(user.email)){
-        let err = new Error("Bad Request - invalid email");
-        err.status = 400;
-        return next(err)
-    };
 
     // check email against database to ensure it isn't already in use
-    User.find({where: {email: user.email}})
+    User.find({where: {email: req.body.email}})
         .then((userfound) => {
             if (userfound !== null){
                 //email is already in use
@@ -70,7 +63,7 @@ router.post('/users', (req,res,next) => {
                 err.status = 409;
                 return next(err);
             }else{
-                user.save()
+                User.create(req.body)
                 .then(() => {
                     res.status(201);
                     res.end();
@@ -86,7 +79,8 @@ router.post('/users', (req,res,next) => {
 router.get('/users', authenticateUser, (req, res) => {
     const user = req.currentUser;
     res.json({
-        id: user.id
+        id: user.id,
+        username: user.username
     });
 });
 
@@ -117,27 +111,39 @@ router.put('/foods/:fId', authenticateUser, (req,res,next) => {
         include:{model: User, attributes: ['id']}
     })
         .then(food => {
-            // ensure user owns the food
-            if(req.currentUser.id === food.User.id){
+            if(food.User){
+                // ensure user owns the food
+                if(req.currentUser.id === food.User.id){
+                    return food.update(req.body)
+                        .then(() => {
+                            res.status(204);
+                            res.end();
+                        });
+                }else{
+                    const err = new Error("Access Denied");
+                    err.status = 401;
+                    return next(err);
+                }
+            }else{//if no User, then edit was called from a day
                 return food.update(req.body)
-                    .then(() => {
-                        res.status(204);
-                        res.end();
-                    });
-            }else{
-                const err = new Error("Access Denied");
-                err.status = 401;
-                return next(err);
+                        .then(() => {
+                            res.status(204);
+                            res.end();
+                        });
             }
         });
 });
 
 // add new food
-router.post('/foods', authenticateUser, (req,res) => {
+router.post('/foods', authenticateUser, (req,res,next) => {
     User.findById(req.currentUser.id)
         .then(user => {
             user.createFood(req.body)
-                .then(result => res.json(result.id));
+                .then(result => {
+                    res.status(201);
+                    res.json(result.id)
+                })
+                .catch(err => next(err));
         });
 });
 
@@ -161,16 +167,11 @@ router.delete('/foods/:fId', authenticateUser, (req,res,next) => {
 
 // create new day
 router.post('/days', authenticateUser, (req,res,next) => {
-    // validate day
-    console.log(req.body);
-    if(!/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/.test(req.body.date)){
-        let err = new Error("Bad Request - invalid date");
-        err.status = 400;
-        return next(err)
-    };
-
     req.currentUser.createDay(req.body)
-        .then(res.end());
+        .then(day => {
+            res.end();
+        })
+        .catch(err => next(err));
 });
 
 // get user's days
