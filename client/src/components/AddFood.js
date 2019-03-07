@@ -11,6 +11,11 @@ class AddFood extends Component {
             body: data,
             headers: this.props.user.headers
         })
+            .then(res => {
+                if (res.status === 200){
+                    this.props.renderProps.history.push('/foods');
+                }
+            })
     }
 
     render(){

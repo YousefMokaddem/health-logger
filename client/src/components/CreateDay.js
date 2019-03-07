@@ -8,7 +8,7 @@ class CreateDay extends Component {
     printErr = () => {
         if(this.state.message){
             return(
-                <h2>{this.state.message}</h2>
+                <p>{this.state.message}</p>
             );
         }
     }
@@ -25,23 +25,25 @@ class CreateDay extends Component {
         }).then(res => {
             if(res.status !== 200){
                 return res.json()
-                .then(res =>
+                .then(res => {
+                    const message = res.message.split("Validation error: ");
                     this.setState({
-                        message: res.message
+                        message: message
                     })
-                );
+                });
             }else{
                 this.setState({
                     message: "Successfully created!"
                 });
+                this.props.history.push('/days');
             }
         });
     }
     render(){
         return(
             <form onSubmit={(e) => this.createDay(e)}>
-                {this.printErr()}
                 <h2>Create New Day</h2>
+                {this.printErr()}
                 <p>Use yyyy-mm-dd format</p>
                 {/* add a date selector */}
                 <label htmlFor="date">Date</label>
