@@ -12,6 +12,7 @@
   "author": "Yousef Mokaddem",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "basic-auth": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
