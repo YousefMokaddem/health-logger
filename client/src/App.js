@@ -15,6 +15,7 @@ import SignUp from './components/SignUp';
 import CreateDay from './components/CreateDay';
 import Days from './components/Days';
 import AddFood from './components/AddFood';
+import SignOut from './components/SignOut';
 
 
 class App extends Component {
@@ -51,10 +52,10 @@ class App extends Component {
   }
 
   //store user in state after sign in
-  setUser(email, headers, id){
+  setUser(email, headers, id, username){
     this.setState({
       user:{
-        email,headers,id
+        email,headers,id,username
       }
     }, () => { //set local storage user
       localStorage.setItem('user', JSON.stringify(this.state.user));
@@ -74,15 +75,16 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Header signOut={this.signOut.bind(this)} day={this.state.day} user={this.state.user}/>
+          <Header day={this.state.day} user={this.state.user}/>
           <Switch >
             {/* display login screen if not logged in and user info if logged in. */}
             <Route exact path="/" render={() => this.state.user? <div></div> : <SignIn setUser={this.setUser.bind(this)}/>} />
-            <Route path="/signup" render={() => <SignUp />} />
+            <Route path="/signup" render={({history}) => <SignUp history={history} />} />
+            <Route path="/signout" render={() => <SignOut signOut={this.signOut.bind(this)} />} />
             <PrivateRoute user={this.state.user} path="/foods/create" component={({history}) => <CreateFood user={this.state.user} history={history} />} />
             <PrivateRoute user={this.state.user} path="/foods" component={() => <Foods user={this.state.user} day={this.state.day} foods={this.state.foods} />} />
             <PrivateRoute user={this.state.user} path="/edit/:id" component={({match,history}) => <UpdateFood user={this.state.user} match={match} history={history} />} />
-            <PrivateRoute user={this.state.user} path="/days/create" component={() => <CreateDay user={this.state.user} />}/>
+            <PrivateRoute user={this.state.user} path="/days/create" component={({history}) => <CreateDay history={history} user={this.state.user} />}/>
             <PrivateRoute user={this.state.user} path="/days/addfood/:id" component={(props) => <AddFood renderProps={props} day={this.state.day} user={this.state.user} />}/>
             <PrivateRoute user={this.state.user} path="/days" component={() => <Days day={this.state.day} selectDay={this.selectDay.bind(this)} user={this.state.user} />} />
             <Route component={NotFound} />
