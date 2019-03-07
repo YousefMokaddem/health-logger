@@ -3,12 +3,14 @@ const bodyParser = require('body-parser');
 const app = express();
 const morgan = require('morgan');
 const routes = require('./routes');
+const cors = require ('cors');
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api', routes);
 
+app.use(cors());
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
