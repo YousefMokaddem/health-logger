@@ -48,14 +48,14 @@ const Food = ({name, calories, fat, carbs, protein, img, id, user, reFetch, auth
         <div className="food-card">
             <Card style={{background: '#E8E8E8', height: '100%'}}>
                 <CardContent>
-                <ReactImageFallback src={img} fallbackImage="https://www.unesale.com/ProductImages/Large/notfound.png" alt={name}/>
-                <h2>{name}</h2>
-                <p>Calories: {calories}</p>
-                <p>Fat: {fat}</p>
-                <p>Carbohydrates: {carbs}</p>
-                <p>Protein: {protein}</p>
-                {showAuthorButtons()}
-                {showAddToDayButton()}
+                    <ReactImageFallback src={img} fallbackImage="https://www.unesale.com/ProductImages/Large/notfound.png" alt={name}/>
+                    <h2 className="food-name">{name}</h2>
+                    <p>Calories: {calories}</p>
+                    <p>Fat: {fat}</p>
+                    <p>Carbohydrates: {carbs}</p>
+                    <p>Protein: {protein}</p>
+                    {showAuthorButtons()}
+                    {showAddToDayButton()}
                 </CardContent>
             </Card>
         </div>

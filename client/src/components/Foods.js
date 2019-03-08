@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import Food from './Food';
-import script from './data/script';
+//material ui components
+import TextField from '@material-ui/core/TextField';
 
 class Foods extends Component{
 
     state={
-        foods:[]
+        foods:[],
+        search: false
     }
 
     componentDidMount(){
@@ -19,23 +21,50 @@ class Foods extends Component{
     }
 
     displayFoods(){
-        return this.state.foods.map((food, i) => {
-            return <Food {...food} key={i} user={this.props.user} day={this.props.day} authorId={food.User.id} reFetch={this.reFetch.bind(this)} />
-        });
+        if(this.state.search){
+            return this.searchedFoods.map((food, i) => {
+                return <Food {...food} key={i} user={this.props.user} day={this.props.day} authorId={food.User.id} reFetch={this.reFetch.bind(this)} />
+            });
+        }else{
+            return this.state.foods.map((food, i) => {
+                return <Food {...food} key={i} user={this.props.user} day={this.props.day} authorId={food.User.id} reFetch={this.reFetch.bind(this)} />
+            });
+        }
+    }  
+
+    searchedFoods = [];
+
+    search(e){
+        if(e.target.value.length > 0){
+            this.searchedFoods = [];
+            this.setState({search: true})
+            this.state.foods.map((food, i) => {
+                if(food.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1){
+                    this.searchedFoods.push(food);
+                }
+                return 0;
+            });
+        }else{
+            this.setState({search: false});
+        }
     }
 
-    runScript(){
-        script();
-    }
 
     render(){
         return(
             <div>
                 <h2 className="title">Foods:</h2>
+                <TextField
+                    id="filled-search"
+                    label="Search field"
+                    type="search"
+                    margin="normal"
+                    variant="filled"
+                    onChange={(e) => this.search(e)}
+                    />
                 <div className="food-grid">
                     {this.displayFoods()}
                 </div>
-                {this.runScript()}
             </div>
         );
     };

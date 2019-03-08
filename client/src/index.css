@@ -64,3 +64,31 @@ a.active{
 .title{
   font-size: 2rem;
 }
+
+.page-buttons{
+  width: 100%;
+  text-align: center;
+}
+.page-buttons ul{
+  list-style: none;
+  padding: 0;
+}
+.page-buttons li {
+  display: inline;
+  padding: 25px;
+}
+.page-buttons a{
+  color: white;
+  background: rgba(68, 68, 68, 0.514); 
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 1.5rem;
+  border: 2px solid rgb(218, 218, 218);
+  border-radius: 5px;
+}
+
+.page-buttons a.active{
+  background: #3f51b5;
+}

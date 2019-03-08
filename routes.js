@@ -88,7 +88,10 @@ router.get('/users', authenticateUser, (req, res) => {
 // get all foods
 // don't show the foods with a day id because they are clones created for users to log foods
 router.get('/foods', (req,res) => {
-    Food.findAll({where: {dayId: null}, include:{model: User, attributes: ['id']}})
+    Food.findAll({
+        where: {dayId: null}, include:{model: User, attributes: ['id']},
+        order:[['name', 'ASC']]
+    })
     .then(foods => {
         let foodsWithUserId = foods.map(food => {
             return {...food.dataValues};
