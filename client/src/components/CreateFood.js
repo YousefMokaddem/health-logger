@@ -1,5 +1,11 @@
 import React,{Component} from 'react';
 
+//material ui compnents
+import TextField from '@material-ui/core/TextField';
+import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+
 class CreateFood extends Component {
 
     state = {
@@ -40,7 +46,6 @@ class CreateFood extends Component {
             headers: this.props.user.headers
         })
             .then(res => {
-                console.log(res.status)
                 if (res.status !== 201){
                     res.json()
                         .then(res => {
@@ -57,34 +62,81 @@ class CreateFood extends Component {
             
     }
 
+    //material ui vars
+    styles = theme => ({
+        textField: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit,
+            width: 200,
+        },
+        dense: {
+            marginTop: 19,
+        }
+    });
+
     render(){
         return(
             <form onSubmit={(e) => this.submitAdd(e)}>
                 <p>Please fill in nutritional values based on a serving size of 100 {this.checkSolid()}</p>
                 {this.printErr()}
-            
-                <label htmlFor="name">Name</label>
-                <input type="text" id="name"/>
-                
-                <label htmlFor="calories">Calories</label>
-                <input type="text" id="calories"/>
-                
-                <label htmlFor="fat">Fat</label>
-                <input type="text" id="fat"/>
-                
-                <label htmlFor="carbs">carbs</label>
-                <input type="text" id="carbs"/>
-                
-                <label htmlFor="protein">Protein</label>
-                <input type="text" id="protein"/>
-    
-                <label htmlFor="img">Image URL</label>
-                <input type="text" id="img"/>
-    
+
+                <TextField
+                    id="name"
+                    label="name"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                <TextField
+                    id="calories"
+                    label="calories"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                <TextField
+                    id="fat"
+                    label="fat"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                <TextField
+                    id="carbs"
+                    label="carbs"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                <TextField
+                    id="protein"
+                    label="protein"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                <TextField
+                    id="img-url"
+                    label="Image URL"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
                 <label htmlFor="isSolid">Solid:</label>
-                <input type="checkbox" id="isSolid" onChange={(e) => {this.toggleSolid(e)}} defaultChecked/>
+                <Checkbox 
+                    id="isSolid"
+                    onChange={(e) => {this.toggleSolid(e)}}
+                    defaultChecked
+                />
+                <br/>
     
-                <input type="submit" value="Add Food"/>
+                <Button type="submit">Add Food</Button>
                 
             </form>
         );

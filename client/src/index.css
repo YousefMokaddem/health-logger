@@ -7,38 +7,60 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #C7EAE4;
+  background: rgb(212, 250, 245);
 }
-.food-grid{
-  padding-left: 100px;
-  padding-right: 100px;
+.app-container{
+  width: 90%;
+  padding-left: 5%;
+  min-height: 50rem;
+  display: grid;
+}
+.food-grid, .day-grid{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 5%;
+  grid-row-gap: 3%;
 }
-.food-card{
-  padding: 10px;
+.food-card, .day-card{
   text-align: center;
-  background: #A7E8BD;
-  border: 1px solid #7BE0AD;
-  border-radius: 25px;
+  align-self: stretch;
+  padding-bottom: 50px;
 }
 
 .food-card img{
-  border: 2px solid #7BE0AD;
-  border-radius: 10px;
+  border: 2px solid rgb(218, 218, 218);
+  border-radius: 7px;
   max-width: 80%;
   max-height: 150px;
 }
 
-form{
-  padding-left: 25px;
+.food-card button, .day-card button{
+  margin: 10px;
 }
 
 form input{
   display:block;
 }
 
+nav{
+  float: right;
+}
+nav h3,nav p{
+  display: inline;
+  padding-left: 25px;
+}
+a{
+  text-decoration: none;
+}
 nav a{
-  margin-left:25px;
+  padding: 20px;
+  /* margin-left:25px; */
+  color: white;
+}
+a.active{
+  background: rgba(0, 0, 0, 0.514);
+}
+
+.title{
+  font-size: 2rem;
 }

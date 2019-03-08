@@ -1,4 +1,8 @@
 import React,{Component} from 'react';
+//material ui components
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
 
 class CreateDay extends Component {
     state={
@@ -17,7 +21,6 @@ class CreateDay extends Component {
         e.preventDefault();
 
         const data = JSON.stringify({date:e.target[0].value});
-        console.log(data);
         fetch('/api/days',{
             method: "POST",
             body: data,
@@ -39,17 +42,34 @@ class CreateDay extends Component {
             }
         });
     }
+
+    //material ui vars
+    styles = theme => ({
+        textField: {
+          marginLeft: theme.spacing.unit,
+          marginRight: theme.spacing.unit,
+          width: 200,
+        },
+      });
+
     render(){
         return(
             <form onSubmit={(e) => this.createDay(e)}>
                 <h2>Create New Day</h2>
                 {this.printErr()}
-                <p>Use yyyy-mm-dd format</p>
-                {/* add a date selector */}
-                <label htmlFor="date">Date</label>
-                <input type="text" name="date"/>
-    
-                <button type="submit">Submit</button>
+                <br/>
+                <TextField
+                    id="date"
+                    label="Date"
+                    type="date"
+                    defaultValue={new Date().toJSON().slice(0,10)}
+                    className={this.styles.textField}
+                    InputLabelProps={{
+                    shrink: true,
+                    }}
+                />
+                <br/>
+                <Button type="submit">Submit</Button>
             </form>
         );
     }

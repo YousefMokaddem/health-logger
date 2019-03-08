@@ -55,6 +55,7 @@ router.post('/users', (req,res,next) => {
 
 
     // check email against database to ensure it isn't already in use
+    // duplicate usernames are allowed
     User.find({where: {email: req.body.email}})
         .then((userfound) => {
             if (userfound !== null){
@@ -118,7 +119,8 @@ router.put('/foods/:fId', authenticateUser, (req,res,next) => {
                         .then(() => {
                             res.status(204);
                             res.end();
-                        });
+                        })
+                        .catch(err => next(err));
                 }else{
                     const err = new Error("Access Denied");
                     err.status = 401;
@@ -129,7 +131,8 @@ router.put('/foods/:fId', authenticateUser, (req,res,next) => {
                         .then(() => {
                             res.status(204);
                             res.end();
-                        });
+                        })
+                        .catch(err => next(err));
             }
         });
 });
@@ -153,12 +156,30 @@ router.delete('/foods/:fId', authenticateUser, (req,res,next) => {
         where: { id:req.params.fId}
     })
         .then(food => {  
-                if(food) {
-                    food.destroy();
-                    res.end();
-                } else {
-                    res.send(404);
+            if(food){
+                if(food.User){
+                    // ensure user owns the food
+                    if(req.currentUser.id === food.User.id){
+                        food.destroy();
+                        res.end();
+                    }else{
+                        const err = new Error("Access Denied");
+                        err.status = 401;
+                        return next(err);
+                    }
+                }else{
+                    if(food) {
+                        food.destroy();
+                        res.end();
+                    } else {
+                        res.send(404);
+                    }
                 }
+            }else{
+                res.send(404);
+            }
+            
+            
         })
         .catch(error => {
             res.status(500).send(error);

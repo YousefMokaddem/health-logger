@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+
+//material ui compnents
+import TextField from '@material-ui/core/TextField';
+import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
 
 class SignUp extends Component {
 
@@ -60,6 +65,19 @@ class SignUp extends Component {
                 }
             });
     }
+
+    //material ui vars
+    styles = theme => ({
+        textField: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit,
+            width: 200,
+        },
+        dense: {
+            marginTop: 19,
+        }
+    });
+
     render(){
         return(
             <div>
@@ -67,21 +85,41 @@ class SignUp extends Component {
                     <h2>Sign Up</h2>
                     {this.printErr()}
 
-                    <label htmlFor="username">Username</label>
-                    <input type="text" name="username"/>
+                    <TextField
+                    id="username"
+                    label="username"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
 
-                    <label htmlFor="email">Email</label>
-                    <input type="text" name="email"/>
-                    
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password"/>
+                    <TextField
+                    id="email"
+                    label="email"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
 
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input type="password" name="confirmPassword"/>
+                    <TextField
+                    id="password"
+                    label="password"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="password"/>
 
-                    <button type="submit">Submit</button>
+                    <TextField
+                    id="confirm-password"
+                    label="confirm password"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="password"/>
+
+                    <Button type="submit">Submit</Button>
                 </form>
-                <p>Already have an account? <NavLink to="/">Sign in!</NavLink></p>
+                <p>Already have an account? <Link to="/">Sign in!</Link></p>
             </div>
         );
     }

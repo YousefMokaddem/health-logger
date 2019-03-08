@@ -12,9 +12,9 @@ class Days extends Component {
 
     populateDays(){
         return(
-            this.state.days.map((day,i) => {
-                return(//create day component which lists nutrition values, foods, total stats per day in a card with a select day button at the bottom
-                    <Day key={i} deleteDay={this.deleteDay.bind(this)} selectDay={this.selectDay.bind(this)} user={this.props.user} day={day}/>
+            this.state.days.map((day) => {
+                return(
+                    <Day key={day.id} deleteDay={this.deleteDay.bind(this)} selectDay={this.selectDay.bind(this)} user={this.props.user} day={day}/>
                 );
             })
         );
@@ -22,6 +22,7 @@ class Days extends Component {
 
     selectDay(day){
         this.props.selectDay(day);
+        this.props.history.push('/foods');
     }
 
     deleteDay(day){
@@ -29,22 +30,29 @@ class Days extends Component {
             method: "DELETE",
             headers: this.props.user.headers
         }).then(res => {
-            if(res.status === 200)
+            if(res.status === 200){
                 this.reFetch();
+            }
         })
     }
 
     reFetch(){
         fetch('/api/days',{headers:this.props.user.headers})
-            .then(res => res.json())
-            .then(days => this.setState({days}));
+            .then(res => {
+                if(res.status === 200){
+                    res.json()
+                    .then(days => this.setState({days}));
+                }
+            })
     }
 
     render(){
         return(
             <div>  
                 <h2>Days:</h2>
-                {this.populateDays()}
+                <div className="day-grid">
+                    {this.populateDays()}
+                </div>
             </div>
         );
     }

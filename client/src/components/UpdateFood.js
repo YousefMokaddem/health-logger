@@ -1,10 +1,18 @@
 import React, {Component} from 'react';
 
+//material ui compnents
+import TextField from '@material-ui/core/TextField';
+import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+
 class UpdateFood extends Component{
     state = {
         id: this.props.match.params.id,
-        fetched: false
+        fetched: false,
+        message: null
     }
+
     componentDidMount(){
         fetch(`/api/foods/${this.state.id}`)
         .then(res=>res.json())
@@ -12,6 +20,7 @@ class UpdateFood extends Component{
             this.setState({food:food, fetched:true});
         },);
     }
+
     submitEdit = (e) => {
         e.preventDefault();
         let data = JSON.stringify({
@@ -30,35 +39,97 @@ class UpdateFood extends Component{
         }).then(res => {
             if(res.status === 204){
                 this.props.history.push('/foods');
+            }else{
+                res.json()
+                    .then(res => {
+                        const message = res.message.split("Validation error: ");
+                            this.setState({
+                                message: message
+                            })
+                    });
             }
         });
         
     }
+
+    printErr = () => {
+        if(this.state.message){
+            return(
+                <p>{this.state.message}</p>
+            );
+        }
+    }
+
     populateForm = (food) => {
         if(this.state.fetched){
             return(
                 <form onSubmit={(e) => this.submitEdit(e)} >
-            
-                    <label htmlFor="name">Name</label>
-                    <input type="text" defaultValue={food.name} name="name"/>
-                    
-                    <label htmlFor="calories">Calories</label>
-                    <input type="text" defaultValue={food.calories} name="calories"/>
-                    
-                    <label htmlFor="fat">Fat</label>
-                    <input type="text" defaultValue={food.fat} name="fat"/>
-                    
-                    <label htmlFor="carbs">carbs</label>
-                    <input type="text" defaultValue={food.carbs} name="carbs"/>
-                    
-                    <label htmlFor="protein">Protein</label>
-                    <input type="text" defaultValue={food.protein} name="protein"/>
+                    {this.printErr()}
+
+
+                    <TextField
+                        defaultValue={food.name}
+                        id="name"
+                        label="name"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <TextField
+                        defaultValue={food.calories}
+                        id="calories"
+                        label="calories"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <TextField
+                        defaultValue={food.fat}
+                        id="fat"
+                        label="fat"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <TextField
+                        defaultValue={food.carbs}
+                        id="carbs"
+                        label="carbs"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <TextField
+                        defaultValue={food.protein}
+                        id="protein"
+                        label="protein"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <TextField
+                        defaultValue={food.img}
+                        id="img-url"
+                        label="Image URL"
+                        className={classNames(this.styles.textField, this.styles.dense)}
+                        style={{display: 'block'}}
+                        margin="dense"
+                        type="text"/>
+
+                    <label htmlFor="isSolid">Solid:</label>
+                    <Checkbox 
+                        id="isSolid"
+                        onChange={(e) => {this.toggleSolid(e)}}
+                        defaultChecked={food.isSolid}
+                    />
+                    <br/>
         
-                    <label htmlFor="img">Image URL</label>
-                    <input type="text" defaultValue={food.img} name="img"/>
-    
-                    <input type="submit" value="Submit Changes"/>
-                
+                    <Button type="submit">Submit Changes</Button>
                 </form>
             );
         }else{
@@ -67,6 +138,19 @@ class UpdateFood extends Component{
             );
         }
     }
+
+    //material ui vars
+    styles = theme => ({
+        textField: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit,
+            width: 200,
+        },
+        dense: {
+            marginTop: 19,
+        }
+    });    
+
     render(){
         return(
             <div>

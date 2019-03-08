@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+
+//material ui compnents
+import TextField from '@material-ui/core/TextField';
+import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
 
 class SignIn extends Component {
     
@@ -53,6 +58,18 @@ class SignIn extends Component {
             });
     }
 
+    //material ui vars
+    styles = theme => ({
+        textField: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit,
+            width: 200,
+        },
+        dense: {
+            marginTop: 19,
+        }
+    });
+
     render(){
         return(
             <div>
@@ -61,15 +78,25 @@ class SignIn extends Component {
                     <h2>Sign In</h2>
                     {this.printErr()}
         
-                    <label htmlFor="email">Email</label>
-                    <input type="text" name="email"/>
-        
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password"/>
-        
-                    <button type="submit">Submit</button>
+                    <TextField
+                    id="email"
+                    label="email"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="text"/>
+
+                    <TextField
+                    id="password"
+                    label="password"
+                    className={classNames(this.styles.textField, this.styles.dense)}
+                    style={{display: 'block'}}
+                    margin="dense"
+                    type="password"/>
+                    
+                    <Button type="submit">Submit</Button>
                 </form>
-                <p>Don't have an account? <NavLink to="/signup">Sign up!</NavLink></p>
+                <p>Don't have an account? <Link to="/signup">Sign up!</Link></p>
             </div>
 
         );
