@@ -43,4 +43,5 @@ app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 5000);
 // start listening on our port
 const server = app.listen(app.get('port'), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
+  console.log(process.env.OPENSHIFT_NODEJS_PORT);
 });
